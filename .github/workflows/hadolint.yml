@@ -2,9 +2,7 @@ name: Lint Dockerfile with Hadolint
 
 on:
   push:
-    branches: [main, implementation-cicd]
-  pull_request:
-    branches: [main]
+    branches: [implementation-cicd]
 
 jobs:
   linter:
@@ -16,3 +14,5 @@ jobs:
         uses: hadolint/hadolint-action@v3.1.0
         with:
           dockerfile: "Dockerfile"
+
+
