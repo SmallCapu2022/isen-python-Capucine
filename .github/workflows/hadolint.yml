@@ -1,4 +1,4 @@
-name: Hadolint Dockerfile Linter
+name: Lint Dockerfile with Hadolint
 
 on:
   push:
@@ -7,13 +7,12 @@ on:
     branches: [main]
 
 jobs:
-  hadolint:
+  linter:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Run Hadolint
+      - name: Lint Dockerfile
         uses: hadolint/hadolint-action@v3.1.0
         with:
-          dockerfile: Dockerfile
+          dockerfile: "Dockerfile"
