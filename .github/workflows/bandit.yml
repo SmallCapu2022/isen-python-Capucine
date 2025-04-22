@@ -22,6 +22,7 @@ jobs:
       - name: Run Bandit Scan
         run: |
           bandit -r . \
-            --exclude unit_tests,unit_tests/,integration_tests,integration_tests/ \
+            --exclude unit_tests,integration_tests \
             --skip B101,B404 \
+            --quiet
 
