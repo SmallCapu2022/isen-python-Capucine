@@ -30,3 +30,10 @@ pip install -r requirements.txt
 ## Reference
 
 Source from <https://github.com/OpenClassrooms-Student-Center/4425126-testing-python-django>
+
+
+Différence entre les 2 images docker
+Variant => Base Image | Size | Vulnerabilities (High/Critical)
+
+classic => python:3.9-slim-buster | ~125 MB | 6
+distroless => gcr.io/distroless/python3 | ~47 MB | 1
