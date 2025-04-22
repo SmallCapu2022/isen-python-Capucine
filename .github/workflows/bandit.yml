@@ -23,6 +23,6 @@ jobs:
         run: |
           bandit -r . \
             --exclude unit_tests,integration_tests \
-            --skip B101,B404 \
+            --skip B105,B106 \
             --quiet
 
