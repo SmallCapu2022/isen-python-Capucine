@@ -23,4 +23,4 @@ jobs:
         run: |
           pylint **/*.py \
             --disable=C0114,C0116,R0903,R0801,W0613,E0401 \
-            --fail-under=5
+            --fail-under=7
