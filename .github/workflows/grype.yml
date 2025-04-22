@@ -1,0 +1,36 @@
+name: Scan SBOM with Grype
+
+on:
+  workflow_run:
+    workflows: ["Generate SBOM with Syft"]
+    types:
+      - completed
+
+jobs:
+  grype-scan:
+    runs-on: ubuntu-latest
+    name: Scan SBOM with Grype
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download SBOM artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: sbom
+          path: ./sbom
+
+      - name: Install Grype
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
+
+      - name: Run Grype on SBOM
+        run: |
+          grype sbom:./sbom/sbom.syft.json -o table
+
+      - name: Upload Grype report
+        uses: actions/upload-artifact@v4
+        with:
+          name: grype-report
+          path: ./sbom/sbom.syft.json
