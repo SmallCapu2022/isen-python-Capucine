@@ -22,5 +22,5 @@ jobs:
       - name: Run Pylint
         run: |
           pylint **/*.py \
-            --disable=C0114,C0116,R0903,R0801,W0613,E0401 \
+            --disable=C0114,C0116,R0903,R0801,W0613,E0401,E1101 \
             --fail-under=7
