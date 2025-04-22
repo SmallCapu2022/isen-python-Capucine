@@ -22,10 +22,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install pylint
 
-    - name: Analyse code with pylint
-      run: |
-        pylint $(git ls-files '*.py')
-
     - name: Run Pylint
       run: |
-        pylint $(git ls-files '*.py') --disable=C,R0801 --fail-under=5
+          pylint $(git ls-files '*.py') --disable=C,R0801 --fail-under=5
+      
