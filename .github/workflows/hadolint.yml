@@ -1,4 +1,4 @@
-name: Lint Dockerfile with Hadolint
+name: Hadolint Dockerfile Linter
 
 on:
   push:
