@@ -12,4 +12,4 @@ jobs:
 
       - name: Lint Dockerfile with Hadolint (official Docker image)
         run: |
-          docker run --rm -i hadolint/hadolint < Dockerfile || true
+          docker run --rm -i hadolint/hadolint hadolint --failure-threshold warning - < Dockerfile

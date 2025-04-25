@@ -27,7 +27,7 @@ jobs:
   scan:
     name: Scan Docker Image with Trivy
     runs-on: ubuntu-latest
-    needs: build  # ⬅️ S'exécute après le build
+    needs: build 
     continue-on-error: true
 
     steps:
