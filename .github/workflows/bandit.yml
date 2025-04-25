@@ -1,0 +1,28 @@
+name: Security - Bandit
+
+on: [push, pull_request]
+
+jobs:
+  bandit-sast:
+    name: Run Bandit Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Bandit
+        run: pip install bandit
+
+      - name: Run Bandit Scan
+        run: |
+          bandit -r . \
+            --exclude unit_tests,integration_tests \
+            --skip B101,B404,B105,B106 \
+            --quiet
+
