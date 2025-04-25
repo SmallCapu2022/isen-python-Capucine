@@ -15,11 +15,36 @@ jobs:
         with:
           python-version: '3.9'
 
-      - name: Install dependencies
+      - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install pylint
+
+      - name: Lint Python code
+        run: |
+          pylint --disable=C,R,W1203,E1101 --fail-under=7 .
 
       - name: Run unit tests
         run: |
           python manage.py test
+
+      - name: Install tidy for HTML linting
+        run: sudo apt-get install -y tidy
+
+      - name: Lint HTML files with tidy
+        run: |
+          find templates -name "*.html" -exec tidy -qe {} \; || true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install stylelint
+        run: |
+          npm install -g stylelint stylelint-config-standard stylelint-config-recommended
+
+      - name: Lint CSS files
+        run: |
+          npx stylelint "static/css/**/*.css" || true
