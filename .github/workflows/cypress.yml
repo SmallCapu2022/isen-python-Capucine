@@ -31,6 +31,15 @@ jobs:
       run: |
         pip install -r requirements.txt
 
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
+    - name: Install Node.js dependencies
+      run: |
+        npm ci
+
     - name: Run migrations and start Django
       run: |
         python manage.py migrate
@@ -41,3 +50,6 @@ jobs:
       uses: cypress-io/github-action@v5
       with:
         start: echo "server already started"
+        wait-on: 'http://localhost:8000'
+        wait-on-timeout: 60
+        config: baseUrl=http://localhost:8000
