@@ -20,4 +20,4 @@ COPY . .
 
 EXPOSE 8080
 
-CMD ["/venv/bin/python", "manage.py", "runserver", "0.0.0.0:8080"]
+CMD ["/venv/bin/gunicorn", "Project.wsgi:application", "--bind", "0.0.0.0:8080"]
