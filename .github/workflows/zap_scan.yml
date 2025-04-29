@@ -1,38 +1,54 @@
-name: ZAP Scan
+name: ZAP DAST Scan
 
 on:
-  push:
-    branches:
-      - main
+    push:
+        branches:
+            - main  
 
 jobs:
-  zap_scan:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Install dependencies
-      run: pip install -r requirements.txt
-
-    - name: Start Django server
-      run: |
-        nohup python manage.py runserver 0.0.0.0:8080 &
-        npx wait-on http://localhost:8080
-
-    - name: Run OWASP ZAP Baseline Scan
-      uses: zaproxy/action-baseline@v0.14.0
-      with:
-        target: 'http://localhost:8080'
-        docker_name: 'owasp/zap2docker-stable'
-        fail_action: false
-        format: 'json'
-        output_path: './zap-reports'
-        cmd_options: '-t 60'
-
-    - name: Upload ZAP Report
-      uses: actions/upload-artifact@v4
-      with:
-        name: zap-report
-        path: ./zap-reports
+    zap-scan:
+        name: DAST Scan with ZAP
+        runs-on: ubuntu-latest
+        
+        steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
+        
+        - name: Set up Docker Buildx
+          uses: docker/setup-buildx-action@v3
+        
+        - name: Build and run application with Docker
+          run: |
+            # Créer un docker-compose.yml simple si vous n'en avez pas
+            echo "version: '3'
+            services:
+              app:
+                build: .
+                ports:
+                  - '8080:8080'" > docker-compose.yml
+            
+            # Utiliser le fichier nouvellement créé
+            docker compose up -d
+            # Wait for the application to be fully up
+            sleep 15
+        
+        - name: ZAP Baseline Scan
+          uses: zaproxy/action-baseline@v0.14.0
+          with:
+            target: 'http://localhost:8080'  
+            cmd_options: '-a -j -I'
+            allow_issue_writing: false
+            fail_action: false
+        
+        - name: Upload ZAP Scan Results
+          uses: actions/upload-artifact@v4
+          with:
+            name: zap-scan-results
+            path: |
+              report.html
+              report.json
+            retention-days: 14
+        
+        - name: Stop Docker containers
+          if: always()
+          run: docker compose down
