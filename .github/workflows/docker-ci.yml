@@ -1,6 +1,9 @@
-name: Build, Push and Scan Docker Image
+name: Docker CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   build:

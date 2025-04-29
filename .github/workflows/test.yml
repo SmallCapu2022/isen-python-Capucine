@@ -1,6 +1,9 @@
-name: Run Unit and Integration Tests
+name: Tests
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   unit-tests:

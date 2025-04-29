@@ -1,6 +1,10 @@
 name: Hadolint
 
-on: [push, pull_request]
+on:
+  workflow_run:
+    workflows: ["Docker CI"]
+    types:
+      - completed
 
 jobs:
   hadolint:
