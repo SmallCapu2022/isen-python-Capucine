@@ -1,54 +1,50 @@
-name: ZAP DAST Scan
+name: Security Audit with ZAP
 
 on:
-    push:
-        branches:
-            - main  
+  push:
+    branches:
+      - main
 
 jobs:
-    zap-scan:
-        name: DAST Scan with ZAP
-        runs-on: ubuntu-latest
-        
-        steps:
-        - name: Checkout code
-          uses: actions/checkout@v4
-        
-        - name: Set up Docker Buildx
-          uses: docker/setup-buildx-action@v3
-        
-        - name: Build and run application with Docker
-          run: |
-            # Créer un docker-compose.yml simple si vous n'en avez pas
-            echo "version: '3'
-            services:
-              app:
-                build: .
-                ports:
-                  - '8080:8080'" > docker-compose.yml
-            
-            # Utiliser le fichier nouvellement créé
-            docker compose up -d
-            # Wait for the application to be fully up
-            sleep 15
-        
-        - name: ZAP Baseline Scan
-          uses: zaproxy/action-baseline@v0.14.0
-          with:
-            target: 'http://localhost:8080'  
-            cmd_options: '-a -j -I'
-            allow_issue_writing: false
-            fail_action: false
-        
-        - name: Upload ZAP Scan Results
-          uses: actions/upload-artifact@v4
-          with:
-            name: zap-scan-results
-            path: |
-              report.html
-              report.json
-            retention-days: 14
-        
-        - name: Stop Docker containers
-          if: always()
-          run: docker compose down
+  zap-audit:
+    name: Run DAST Scan via OWASP ZAP
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Clone source code
+      uses: actions/checkout@v4
+
+    - name: Prepare Docker build
+      uses: docker/setup-buildx-action@v3
+
+    - name: Launch App in Background
+      run: |
+        echo "version: '3'
+        services:
+          web:
+            build: .
+            ports:
+              - '8080:8080'" > docker-compose.yml
+
+        docker compose up -d
+        sleep 15  # Wait for server to be reachable
+
+    - name: Execute ZAP Baseline Scan
+      uses: zaproxy/action-baseline@v0.14.0
+      with:
+        target: 'http://localhost:8080'
+        allow_issue_writing: false
+        fail_action: false
+
+    - name: Archive ZAP Results
+      uses: actions/upload-artifact@v4
+      with:
+        name: zap-dast-results
+        path: |
+          report.html
+          report.json
+        retention-days: 10
+
+    - name: Shutdown services
+      if: always()
+      run: docker compose down
